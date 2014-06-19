@@ -24,7 +24,7 @@ public class BookActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_book);
-		String book = null;
+		StringBuilder book = new StringBuilder();
 		InputStream inputStream = null;
 		try {
 	        AssetManager assetManager = getAssets();
@@ -33,7 +33,7 @@ public class BookActivity extends ActionBarActivity {
 			Log.e("HW"," IOException" + e.getMessage());
 		} finally{
 			 book = parseXML(inputStream);
-			 Log.i("HW", book);
+			 Log.i("HW", book.toString());
 		}
 		TextView txtView = (TextView) findViewById(R.id.text_id);
 		txtView.setText(book);
@@ -45,9 +45,9 @@ public class BookActivity extends ActionBarActivity {
 	 * @param inputStream InputStream of the input xml file
 	 * @return Returns a String containing all text inside paragraph which are followed by a <pagenum> tag
 	 */
-	public String parseXML(InputStream inputStream) {
-		String paragraphs = "";
-        String book = "";
+	public StringBuilder parseXML(InputStream inputStream) {
+		StringBuilder book = new StringBuilder("");
+        StringBuilder paragraphs = new StringBuilder("");
 		try{
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true); 
@@ -56,14 +56,14 @@ public class BookActivity extends ActionBarActivity {
             int eventType = xpp.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
             	if(eventType == XmlPullParser.START_TAG && xpp.getName().equals("p"))
-            		paragraphs = "";
+            		 paragraphs.setLength(0);
             	else if(eventType == XmlPullParser.TEXT) 
-	                 paragraphs += xpp.getText();
+            	     paragraphs.append(xpp.getText());
 	            else if ((eventType == XmlPullParser.END_TAG && xpp.getName().equals("p"))){
 	            	 if (lookAhead(xpp))
-	            		 book += paragraphs + " ";
+	            		 book.append(paragraphs + " ");
 	            	 else
-	            		 paragraphs = "";
+	            		 paragraphs.setLength(0);
 	             }
 	             eventType = xpp.next();
             }
