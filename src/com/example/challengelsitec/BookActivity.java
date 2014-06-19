@@ -46,7 +46,7 @@ public class BookActivity extends ActionBarActivity {
 	 * @return Returns a String containing all text inside paragraph which are followed by a <pagenum> tag
 	 */
 	public String parseXML(InputStream inputStream) {
-		String text = "";
+		String paragraphs = "";
         String book = "";
 		try{
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -56,14 +56,14 @@ public class BookActivity extends ActionBarActivity {
             int eventType = xpp.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
             	if(eventType == XmlPullParser.START_TAG && xpp.getName().equals("p"))
-            		text = "";
+            		paragraphs = "";
             	else if(eventType == XmlPullParser.TEXT) 
-	                 text += xpp.getText();
+	                 paragraphs += xpp.getText();
 	            else if ((eventType == XmlPullParser.END_TAG && xpp.getName().equals("p"))){
 	            	 if (lookAhead(xpp))
-	            		 book += text + " ";
+	            		 book += paragraphs + " ";
 	            	 else
-	            		 text = "";
+	            		 paragraphs = "";
 	             }
 	             eventType = xpp.next();
             }
